@@ -1,0 +1,59 @@
+/* Tukum - pedigrees of Iradi horses. Stylesheet rev. 2019 */
+body{margin:0;background:#e9e2d0;font:13px/1.45 Verdana,Tahoma,"DejaVu Sans",sans-serif;color:#2b2118}
+a{color:#7a3412}a:visited{color:#5e3a22}a:hover{color:#b2531c}
+#wrap{max-width:980px;margin:0 auto;background:#fbf8f0;border-left:1px solid #cdbf9f;border-right:1px solid #cdbf9f;min-height:100vh}
+#top{background:#3f2c1d;color:#f2e6c9;padding:10px 16px 8px;display:flex;align-items:center;gap:14px;border-bottom:3px solid #a8783f}
+#top img{width:58px;height:58px}
+#top .t1{font:bold 30px/1 Georgia,"Times New Roman",serif;letter-spacing:3px;color:#f6e7c1}
+#top .t2{font-size:12px;color:#d5c29a;margin-top:3px}
+#top form{margin-left:auto;font-size:12px}
+#top input[type=text]{width:170px;padding:3px;border:1px solid #a8783f;background:#fffaf0}
+#top button,.btn{background:#a8783f;color:#fff;border:1px solid #6f4c25;padding:3px 9px;cursor:pointer;font:inherit}
+#nav{background:#d9c9a3;border-bottom:1px solid #b9a57a;padding:4px 10px;font-size:12px}
+#nav a{display:inline-block;padding:2px 8px;text-decoration:none;color:#3f2c1d;font-weight:bold}
+#nav a:hover,#nav a.on{background:#fbf8f0}
+#main{padding:14px 18px 26px}
+h1{font:bold 22px Georgia,serif;margin:4px 0 6px;color:#3f2c1d}
+h1 small{font:normal 13px Verdana,sans-serif;color:#6b5a45}
+h2{font:bold 16px Georgia,serif;color:#5e3a22;border-bottom:1px solid #cdbf9f;padding-bottom:2px;margin:20px 0 8px}
+h3{font-size:13px;margin:14px 0 4px}
+.sub{color:#6b5a45;margin:0 0 10px}
+table.t{border-collapse:collapse;margin:4px 0 10px;font-size:12px}
+table.t th{background:#e7dcc2;text-align:left;padding:3px 7px;border:1px solid #cdbf9f;white-space:nowrap}
+table.t td{padding:3px 7px;border:1px solid #ddd2b8;vertical-align:top}
+table.t tr:nth-child(even) td{background:#f5efe1}
+table.info th{width:150px}
+.wide{width:100%}
+.ped{border-collapse:collapse;width:100%;font-size:11px;table-layout:fixed}
+.ped td{border:1px solid #cdbf9f;padding:2px 4px;vertical-align:middle;overflow:hidden}
+.ped td.m{background:#fbf3f0}.ped td.s{background:#eef3f7}
+.ped td a{font-weight:bold;text-decoration:none}
+.ped td .y{color:#7b6a55;font-size:10px}
+.ped td.dup{box-shadow:inset 4px 0 0 var(--dc)}
+.ped td.unk{color:#a99a82;font-style:italic}
+.tag{display:inline-block;font-size:10px;padding:0 4px;border:1px solid #b9a57a;background:#efe6cf;color:#5e3a22;margin-left:3px;vertical-align:1px}
+.tag.k{background:#fde9c9;border-color:#d69a48}.tag.x{background:#f6d6d0;border-color:#c26a5a}
+.note{background:#fff6dc;border:1px solid #e1c98d;padding:6px 9px;margin:8px 0}
+.box{border:1px solid #cdbf9f;background:#f7f1e3;padding:8px 11px;margin:0 0 12px}
+.cols{display:flex;gap:18px;flex-wrap:wrap}.cols>div{flex:1 1 280px}
+.small{font-size:11px;color:#6b5a45}
+.coi{font-weight:bold}
+.gl dt{font-weight:bold;margin-top:6px}.gl dd{margin:0 0 0 18px}
+#sugg{position:absolute;background:#fffaf0;border:1px solid #a8783f;max-height:260px;overflow:auto;z-index:9;font-size:12px;min-width:260px}
+#sugg div{padding:2px 6px;cursor:pointer}#sugg div:hover{background:#ecdcb8}
+.ac{position:relative;display:inline-block}
+#foot{border-top:3px solid #a8783f;background:#3f2c1d;color:#cdbb95;font-size:11px;padding:10px 16px}
+#foot a{color:#f2e6c9}
+.pager a,.pager b{margin-right:6px}
+.jarnama{margin:14px auto 0;text-align:center}
+@media (max-width:700px){#top{flex-wrap:wrap}#top form{margin-left:0}.ped{font-size:10px}}
+figure.photo{margin:6px 0 14px;background:#f2ead6;border:1px solid #cdbf9f;padding:5px}
+figure.photo img{display:block;width:100%;height:auto}
+figure.photo figcaption{font-size:11px;color:#5e4a33;padding:4px 2px 0}
+figure.photo .cr{color:#8b7a63;white-space:nowrap}
+figure.right{float:right;width:44%;margin:4px 0 10px 16px}
+figure.wide{max-width:100%}
+.gallery{display:flex;flex-wrap:wrap;gap:8px}.gallery figure.thumb{width:calc(20% - 8px);min-width:150px;margin:0}
+figure.horse{max-width:520px}
+@media (max-width:700px){figure.right{float:none;width:auto;margin:6px 0}}
+figure.right{clear:right}
