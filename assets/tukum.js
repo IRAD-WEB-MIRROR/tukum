@@ -102,6 +102,41 @@
     return html;
   }
 
+  // ---- female family and linebreeding
+  function famRow(i) {
+    var F_ = window.TK_FAM ? TK_FAM[i] : -1;
+    if (F_ === undefined || F_ < 0) return "<tr><th>Female family</th><td><span class=\"unk\">not numbered</span></td></tr>";
+    var f = TK_FAMS[F_], r = H[f[2]];
+    return '<tr><th>Female family</th><td><a href="family/' + f[1] + '.html">' + f[0] + '</a> <span class="small">(' + esc(r.n) + ", " + r.y + "; " + f[3] + " horses)</span></td></tr>";
+  }
+  var LB_NOTE = '<p class="small">Generations count from this horse: the sire and dam are generation 1. "3 &times; 4" means the ancestor is in generation 3 on the sire\'s side and generation 4 on the dam\'s. Blood is his or her share of the pedigree, adding 50% for a parent, 25% for a grandparent and so on for every appearance.</p>';
+  function lineb(si, da, G) {
+    var pos = {};
+    function walk(i, g, side) {
+      if (i === null || g > G) return;
+      (pos[i] = pos[i] || [[], []])[side].push(g);
+      walk(H[i].si, g + 1, side); walk(H[i].da, g + 1, side);
+    }
+    walk(si, 1, 0); walk(da, 1, 1);
+    var rows = [];
+    Object.keys(pos).forEach(function (a) {
+      var sg = pos[a][0].sort(), dg = pos[a][1].sort();
+      if (sg.length + dg.length < 2) return;
+      var p = 0; sg.concat(dg).forEach(function (g) { p += Math.pow(0.5, g); });
+      rows.push([+a, sg, dg, p]);
+    });
+    if (!rows.length) return "<p>No ancestor appears twice in " + G + " generations.</p>";
+    rows.sort(function (x, y) { return y[3] - x[3] || (H[x[0]].n < H[y[0]].n ? -1 : 1); });
+    var s = '<table class="t lb"><tr><th>Ancestor</th><th>Foaled</th><th>Crosses</th><th title="sire side x dam side">Generations</th><th>Where</th><th title="share of the pedigree, summed over every appearance">Blood</th></tr>';
+    rows.slice(0, 15).forEach(function (r) {
+      s += "<tr><td>" + link(r[0]) + "</td><td>" + H[r[0]].y + "</td><td>" + (r[1].length + r[2].length) + "</td><td>" + (r[1].join(", ") || "-") + " &times; " + (r[2].join(", ") || "-") +
+        "</td><td>" + (r[1].length && r[2].length ? "both sides" : (r[1].length ? "sire's side" : "dam's side")) + "</td><td>" + (r[3] * 100).toFixed(2) + "%</td></tr>";
+    });
+    s += "</table>";
+    if (rows.length > 15) s += '<p class="small">And ' + (rows.length - 15) + " more, each further back or less often.</p>";
+    return s;
+  }
+
   function horseRow(i, other) {
     var h = H[i];
     return "<tr><td>" + link(i) + tags(h) + "</td><td>" + h.y + "</td><td>" + sexWord(h) + "</td><td>" + esc(h.c) + "</td>" +
@@ -193,7 +228,7 @@
       (h.ow ? "<tr><th>Owner</th><td>" + md(h.ow) + "</td></tr>" : "") +
       (h.cn !== "IRD" && (!BR[h.br] || BR[h.br].k !== "usa-breeders") && h.b !== "T" && h.b !== "QH" ? "<tr><th>Exported</th><td>" + CN[h.cn] + "</td></tr>" : "") +
       "<tr><th>Studbook</th><td>" + (h.reg ? esc(h.reg) : '<span class="unk">not entered</span>') + "</td></tr>" +
-      "<tr><th>Inbreeding</th><td class=\"coi\">" + pct(coi(h.si, h.da, 8)) + "</td></tr></table></div><div>";
+      "<tr><th>Inbreeding</th><td class=\"coi\">" + pct(coi(h.si, h.da, 8)) + "</td></tr>" + famRow(i) + "</table></div><div>";
     var P_ = (window.TK_P || {})[h.id];
     if (P_) s += '<figure class="photo horse"><img src="assets/photos/' + P_[0] + '" alt="' + esc(h.n) + '"><figcaption>' + esc(P_[1]) + ' <span class="cr">' + esc(window.TK_CREDIT) + "</span></figcaption></figure>";
     if (h.perf) s += "<h3>Performance</h3><p>" + md(h.perf) + "</p>";
@@ -207,14 +242,18 @@
     }
     s += '</p><p class="small"><a href="mating.html#s=' + (h.s === "M" ? "" : h.id) + "&d=" + (h.s === "M" ? h.id : "") + '">Test mating with this horse</a> &middot; ' +
       '<a href="search.html#' + (h.s === "M" ? "dam" : "sire") + "=" + encodeURIComponent(h.n) + '">Search foals by name</a></p></div></div>';
-    s += "<h2>Pedigree</h2><p class=\"small\">Generations: " + [3, 4, 5, 6, 7].map(function (n) { return n === g ? "<b>" + n + "</b>" : '<a href="horse.html#h=' + h.id + "&g=" + n + '">' + n + "</a>"; }).join(" ") + "</p>";
+    s += '<div class="pedwrap"><div class="ponly"><b>TUKUM</b> &middot; tukum.net &middot; pedigrees of Iradi horses<br><span class="small">Printed from an unofficial volunteer database. This is not a studbook certificate.</span><h1>' +
+      esc(h.n) + suffix(h) + " <small>" + BREED[h.b] + " " + sexWord(h) + ", " + esc(h.c) + ", foaled " + h.y + (h.reg ? ", " + esc(h.reg) : "") + ", inbreeding " + pct(coi(h.si, h.da)) + "</small></h1></div>";
+    s += "<h2>Pedigree</h2><p class=\"noprint\"><button class=\"btn\" id=\"pp\">Print pedigree</button> <span class=\"small\">Prints the pedigree and the linebreeding report on one page.</span></p><p class=\"small noprint\">Generations: " + [3, 4, 5, 6, 7].map(function (n) { return n === g ? "<b>" + n + "</b>" : '<a href="horse.html#h=' + h.id + "&g=" + n + '">' + n + "</a>"; }).join(" ") + "</p>";
     s += pedigree(h.si, h.da, g);
+    s += "<h2>Linebreeding</h2>" + lineb(h.si, h.da, 6) + LB_NOTE + "</div>";
     if (kids.length) s += "<h2>Progeny (" + kids.length + ")</h2>" + table(kids, h.s === "M" ? "si" : "da");
     if (h.da !== null) {
       var sibs = (BYD[h.da] || []).filter(function (k) { return k !== i; }).sort(byYear);
       if (sibs.length) s += "<h2>Siblings out of " + esc(H[h.da].n) + "</h2>" + table(sibs);
     }
-    $("horse").innerHTML = s;
+    $("horse").innerHTML = s; $("horse").className = "hp";
+    $("pp").onclick = function () { document.body.classList.add("pp"); window.print(); setTimeout(function () { document.body.classList.remove("pp"); }, 300); };
   };
   P.mating = function () {
     var si = ID[q("s")], da = ID[q("d")];
