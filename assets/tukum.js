@@ -45,7 +45,7 @@
     if (h.f.indexOf("F") >= 0) t += '<span class="tag" title="see Famous horses">famous</span>';
     return t;
   }
-  function blink(k) { var b = BR[k]; return b ? '<a href="breeder.html#b=' + b.k + '">' + esc(b.n) + "</a>" : '<span class="unk">not recorded</span>'; }
+  function blink(k) { var b = BR[k]; return b ? '<a href="' + (STATIC ? "breeder/" + b.k + ".html" : "breeder.html#b=" + b.k) + '">' + esc(b.n) + "</a>" : '<span class="unk">not recorded</span>'; }
 
   // ---- inbreeding: kinship (tabular) method, unknown ancestors count as unrelated
   var KIN = {}, FMEMO = {};
