@@ -191,7 +191,27 @@
     var recent = H.map(function (h, i) { return i; }).filter(function (i) { return H[i].y === THIS_YEAR; });
     recent.sort(function (a, b) { return ((a * 7919) % 101) - ((b * 7919) % 101); });
     $("recent").innerHTML = table(recent.slice(0, 12));
+    foals(recent);
   };
+  /* Foals of the week: six of this year's foals, picked afresh each week (Irad Time, weeks from Monday) */
+  function foals(list) {
+    var el = $("foals"); if (!el) return;
+    var n = new Date(), t = new Date(n.getTime() + n.getTimezoneOffset() * 60000 + 6 * 3600000);
+    var day = Date.UTC(t.getFullYear(), t.getMonth(), t.getDate()) / 864e5, wd = (new Date(day * 864e5).getUTCDay() + 6) % 7, mon = day - wd;
+    var jan4 = Date.UTC(new Date(mon * 864e5 + 3 * 864e5).getUTCFullYear(), 0, 4) / 864e5, wk = Math.floor((mon + 3 - (jan4 - (new Date(jan4 * 864e5).getUTCDay() + 6) % 7)) / 7) + 1;
+    function hh(x) { var h = 2166136261; for (var i = 0; i < x.length; i++) { h ^= x.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; }
+    var pick = list.slice().sort(function (a, b) { return hh(mon + ":" + H[a].id) - hh(mon + ":" + H[b].id); }).slice(0, 6);
+    var M = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    var d0 = new Date(mon * 864e5), d1 = new Date((mon + 6) * 864e5);
+    $("foalsWk").innerHTML = "Week " + wk + ", " + d0.getUTCDate() + (d0.getUTCMonth() !== d1.getUTCMonth() ? " " + M[d0.getUTCMonth()] : "") + " to " + d1.getUTCDate() + " " + M[d1.getUTCMonth()] + " " + d1.getUTCFullYear() +
+      ". Six of this year's foals from the registries' lists, a new six every Monday.";
+    el.innerHTML = pick.map(function (i) {
+      var h = H[i];
+      return '<div class="box foal"><b>' + link(i) + "</b>" + (h.g ? ' <span class="small">(&ldquo;' + esc(h.g) + '&rdquo;)</span>' : "") +
+        '<br><span class="small">' + esc(h.c) + " " + sexWord(h) + ", " + esc(BREED[h.b] || h.b) + (h.reg ? ", " + esc(h.reg) : "") + "</span>" +
+        '<br>by ' + link(h.si) + "<br>out of " + link(h.da) + '<br><span class="small">Bred by ' + blink(h.br) + "</span></div>";
+    }).join("");
+  }
   P.search = function () {
     var term = q("q"), breed = q("breed"), sire = q("sire"), dam = q("dam");
     $("q").value = term; $("breed").value = breed; $("sire").value = sire; $("dam").value = dam;

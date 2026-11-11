@@ -73,3 +73,4 @@ body.pp .hp>*{display:none}body.pp .hp>.pedwrap{display:block}
 table.t th,table.t td{-webkit-print-color-adjust:exact;print-color-adjust:exact}
 a{color:#2b2118;text-decoration:none}
 @page{margin:12mm}}
+.foals{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:0 12px}.foal{line-height:1.45}
